@@ -34,8 +34,17 @@ data %<>% separate(col= Site,
 names(data)<-make.names(names(data),unique = TRUE)
 
 data %<>% mutate(GamesPlayed = Current.Wins + Current.Losses)
+
 data %<>% mutate(Record = ifelse(Current.Wins + Current.Losses ==0, 0, Current.Wins/(GamesPlayed)))
 
-#Needs some switching
-sum(data$TMAX <= data$TMIN)
+
+
+needs_switch <- which(data$TMAX <= data$TMIN)
+for (row in needs_switch){
+  temp <- data[row,21]
+  data[row,21] <- data[row,22]
+  data[row,22] <- temp
+}
+
+
 
