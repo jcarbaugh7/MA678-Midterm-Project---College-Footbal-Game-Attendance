@@ -3,11 +3,12 @@ library(magrittr)
 library(stringr)
 library(stringi)
 
-data <- read_csv("CFBeattendance.csv",)
+data <- read_csv("CFBeattendance.csv")
 str(data)
 
+data %<>% mutate(Time = strptime(Time, format = "%I:%M %p"))
 data %<>% mutate(Date = strptime(Date, format = "%m/%d/%Y"))
-data %<>% mutate(Date = strptime(Time, format = "%H:%M %p"))
+
 
 data %<>% mutate(Opponent = stri_enc_toutf8(Opponent))
 
@@ -45,6 +46,11 @@ for (row in needs_switch){
   data[row,21] <- data[row,22]
   data[row,22] <- temp
 }
+
+
+#################################################################
+#Visualization
+
 
 
 
