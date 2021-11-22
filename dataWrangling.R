@@ -38,6 +38,8 @@ data %<>% mutate(GamesPlayed = Current.Wins + Current.Losses)
 
 data %<>% mutate(Record = ifelse(Current.Wins + Current.Losses ==0, 0, Current.Wins/(GamesPlayed)))
 
+data %<>% mutate(Opponent_Rank = factor(Opponent_Rank, levels = c("1", "2", "3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","NR")))
+data %<>% mutate(Rank = factor(Rank, levels = c("1", "2", "3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","NR")))
 
 
 needs_switch <- which(data$TMAX <= data$TMIN)
@@ -49,8 +51,28 @@ for (row in needs_switch){
 
 
 #################################################################
-#Visualization
+#Visualization(EDA)
 
+data_bc <- filter(data, Team == "Boston College")
+plot(x = data_bc$Date, y = data_bc$Fill.Rate)
+ggplot(data_bc, aes(x=as.Date(Date), y=Fill.Rate)) + geom_line()
 
+ggplot(data, aes(x = PRCP, y = Fill.Rate)) + geom_point()
 
+ggplot(data, aes(x = SNOW, y = Fill.Rate)) + geom_point()
 
+ggplot(data_bc, aes(x = TMAX, y = Fill.Rate)) + geom_point()
+
+ggplot(data, aes(x = Rank, y = Fill.Rate)) + geom_point()
+
+ggplot(data, aes(x = Record, y = Fill.Rate)) + geom_point()
+ggplot(data_bc, aes(x = GamesPlayed, y = Fill.Rate)) + geom_point()
+
+mean(filter(data, BigGame == 0)$Fill.Rate)
+mean(filter(data, BigGame == 1)$Fill.Rate)
+
+mean(filter(data, NonConference == 0)$Fill.Rate)
+mean(filter(data, NonConference == 1)$Fill.Rate)
+
+mean(filter(data, CollegeGameDay == 0)$Fill.Rate)
+mean(filter(data, CollegeGameDay == 1)$Fill.Rate)
