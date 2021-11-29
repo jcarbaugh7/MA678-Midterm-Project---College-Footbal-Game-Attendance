@@ -2,6 +2,9 @@ library(tidyverse)
 library(magrittr)
 library(stringr)
 library(stringi)
+library(arm)
+
+#https://geoffboeing.com/2016/09/college-football-stadium-attendance/
 
 data <- read_csv("CFBeattendance.csv")
 str(data)
@@ -41,6 +44,7 @@ data %<>% mutate(Record = ifelse(Current.Wins + Current.Losses ==0, 0, Current.W
 data %<>% mutate(Opponent_Rank = factor(Opponent_Rank, levels = c("1", "2", "3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","NR")))
 data %<>% mutate(Rank = factor(Rank, levels = c("1", "2", "3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","NR")))
 
+data %<>% mutate(New.Coach = as.integer(New.Coach), Tailgating = as.integer(Tailgating))
 
 needs_switch <- which(data$TMAX <= data$TMIN)
 for (row in needs_switch){
@@ -53,9 +57,9 @@ for (row in needs_switch){
 #################################################################
 #Visualization(EDA)
 
-data_bc <- filter(data, Team == "Boston College")
+data_bc <- filter(data, Team == "Notre Dame")
 plot(x = data_bc$Date, y = data_bc$Fill.Rate)
-ggplot(data_bc, aes(x=as.Date(Date), y=Fill.Rate)) + geom_line()
+ggplot(data) + geom_line(mapping = aes(x=as.Date(Date), y=Fill.Rate, color = Team), show.legend = FALSE)
 
 ggplot(data, aes(x = PRCP, y = Fill.Rate)) + geom_point()
 
@@ -76,3 +80,38 @@ mean(filter(data, NonConference == 1)$Fill.Rate)
 
 mean(filter(data, CollegeGameDay == 0)$Fill.Rate)
 mean(filter(data, CollegeGameDay == 1)$Fill.Rate)
+
+mean(filter(data, Tailgating == 0)$Fill.Rate)
+mean(filter(data, Tailgating == 1)$Fill.Rate)
+
+mean(filter(data, New.Coach == 0)$Fill.Rate)
+mean(filter(data, New.Coach == 1)$Fill.Rate)
+
+length(filter(data, Team == "Clemson")$Team)
+
+ggplot(data)+geom_density(alpha=0.3)+
+  aes(x=qlogis(Fill.Rate),color=Team)+facet_wrap(~Team)+theme(legend.position="none")+geom_rug()+
+  xlab("Stadium Fill Rate (Percentage")+geom_vline(xintercept=mean(data$Fill.Rate),color="red",lty=2)
+
+ggplot(data)+geom_line()+
+  aes(x=as.Date(Date), y = Fill.Rate, color=Team)+facet_wrap(~Team)+theme(legend.position="none")+
+  xlab("Stadium Fill Rate (Percentage")
+
+ggplot(data)+geom_jitter()+
+  aes(x=BigGame, y = Fill.Rate, color=Team)+facet_wrap(~Team)+theme(legend.position="none")+
+  xlab("Stadium Fill Rate (Percentage")
+
+ggplot(data)+geom_jitter()+
+  aes(x=NonConference, y = Fill.Rate, color=Team)+facet_wrap(~Team)+theme(legend.position="none")+
+  xlab("Stadium Fill Rate (Percentage")
+
+
+mean_fillrates <- data %>% group_by(Team) %>%
+  summarise(Average_FillRate = mean(Fill.Rate, na.rm = TRUE)) %>%
+  arrange(desc(Average_FillRate))
+
+
+
+ggplot(mean_fillrates) +
+  geom_bar(stat = "identity", mapping = aes(x = reorder(Team, -Average_FillRate), y = Average_FillRate, fill = Team), show.legend = FALSE) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
