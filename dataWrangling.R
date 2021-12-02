@@ -101,6 +101,10 @@ ggplot(data)+geom_histogram()+
   aes(x = Fill.Rate, fill=Team, color = Team)+facet_wrap(~Team)+theme(legend.position="none")+
   xlab("Stadium Fill Rate (Percentage")
 
+ggplot(data)+geom_histogram()+
+  aes(x = Fill.Rate, fill=Conference, color = Conference)+facet_wrap(~Conference)+theme(legend.position="none")+
+  xlab("Stadium Fill Rate (Percentage")
+
 ggplot(data)+geom_jitter()+
   aes(x=BigGame, y = Fill.Rate, color=Team)+facet_wrap(~Team)+theme(legend.position="none")+
   xlab("Stadium Fill Rate (Percentage")
