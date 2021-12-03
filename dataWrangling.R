@@ -3,6 +3,9 @@ library(magrittr)
 library(stringr)
 library(stringi)
 library(arm)
+library(rstan)
+library(rstanarm)
+library(lme4)
 
 #https://geoffboeing.com/2016/09/college-football-stadium-attendance/
 
@@ -142,5 +145,11 @@ hist(data$Fill.Rate)
 # qqline(log(-log(test)), col = "steelblue", lwd = 2)
 
 
+#################################################################
+#Model Selection
 
+lin_fit <- stan_glm(Fill.Rate ~ Tailgating + PRCP + TMIN + NonConference + BigGame + Record, data = data, refresh = 0)
+rbind(lin_fit$coefficients,lin_fit$ses)
 
+multi_fit <- lmer(Fill.Rate ~ Tailgating + PRCP + TMIN + NonConference + BigGame + Record + (1+PRCP|Team), data)
+multi_fit
