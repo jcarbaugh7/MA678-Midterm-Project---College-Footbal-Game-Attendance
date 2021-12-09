@@ -5,6 +5,8 @@ library(stringi)
 library(arm)
 library(rstan)
 library(rstanarm)
+library(lattice)
+
 library(lme4)
 
 #https://geoffboeing.com/2016/09/college-football-stadium-attendance/
@@ -144,6 +146,13 @@ hist(data$Fill.Rate)
 # qqnorm(log(-log(test)), pch = 1, frame = FALSE)
 # qqline(log(-log(test)), col = "steelblue", lwd = 2)
 
+ggplot(data)+
+  aes(TMAX, Fill.Rate)+
+  geom_point(aes(color = Team),alpha = 0.1)+
+  labs(title="Maximum Temperature vs. Stadium Fill Rate, Stratified over Tailgating Quality",x="Max Temperature (F)",y="Fill Rate (%)")+
+  geom_smooth(aes(color = Team),method = "lm",se = FALSE)+theme(legend.position="none")+
+  facet_wrap(~Tailgating)
+
 
 #################################################################
 #Model Selection
@@ -151,5 +160,23 @@ hist(data$Fill.Rate)
 lin_fit <- stan_glm(Fill.Rate ~ Tailgating + PRCP + TMIN + NonConference + BigGame + Record, data = data, refresh = 0)
 rbind(lin_fit$coefficients,lin_fit$ses)
 
-multi_fit <- lmer(Fill.Rate ~ Tailgating + PRCP + TMIN + NonConference + BigGame + Record + (1+PRCP|Team), data)
-multi_fit
+multi_fit <- lmer(Fill.Rate ~ Tailgating + PRCP + TMIN + NonConference + BigGame + Record + (1+TMIN|Team), data)
+
+
+scale <- 1/(max(data$Fill.Rate) - min(data$Fill.Rate)) - .001
+test <- scale * data$Fill.Rate
+range(test)
+test <- test - min(test) + .001
+data_t <- mutate(data,Fill_Fixed = test)
+hist(qlogis(test))
+
+hist(data$GamesPlayed)
+
+fit4 <- lmer(qlogis(Fill_Fixed)~TMAX+GamesPlayed+Tailgating + BigGame + (1+TMAX|Team)+(1+Tailgating|Team),data_t)
+fit5 <- lmer(qlogis(Fill_Fixed)~TMAX+Tailgating + BigGame + Month + (1+TMAX|Team)+(1+Record|Team)+(1+Tailgating|Team) +(1+Month|Team) ,data_t)
+
+summary(fit5)
+plot(fit4)
+plot(fit5)
+qqmath(fit4)
+qqmath(fit5)
