@@ -112,6 +112,8 @@ Finally, I hold that this project is a good stepping stone for further analysis 
 
 ## Citations
 
+Data Source (With Variable Descriptions): https://www.kaggle.com/jeffgallini/college-football-attendance-2000-to-2018
+
 Hadley Wickham (2017). tidyverse: Easily Install and Load the ‘Tidyverse’. R package version 1.2.1.
 https://CRAN.R-project.org/package=tidyverse
 
