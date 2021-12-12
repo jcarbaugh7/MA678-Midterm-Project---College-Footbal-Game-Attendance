@@ -21,7 +21,7 @@ source(file = "visualization.R", echo = FALSE)
 
 ## Abstract
 
-REWRITE THIS AFTER REST OF REPORT IS DONE. For right now, this abstract will some notes for the rest of the report. Introduction: I'll talk about the reasons I find this topic interesting, taking a lot of information from the project proposal. Method: Talk about the model selection, why I made the choices I did, mention the transformations that were done, add in some short EDA to help with explanation. Result: Talk about the coefficients that were found, as well as showing fixef and ranef plots. Discussion: Take deeper dive into what this may mean, highlight any interesting random effects, talk about what I would like to do next. As the conclusions may not be incredibly mind-blowing, it may make sense to treat this project as a stepping stone that could include more school-specific information (student body as well?) as opposed to just game information. DONT FORGET CITATIONS.
+This study explores the factors leading to attendance rates at NCAA Division I FBS college football games. The purpose of this study is to assist schools in increasing their attendance numbers, thus generating greater revenue. A multilevel linear model is utilized, with fixed variables for environmental factors, team quality factors, and other game specific information. The random effects included grouping by teams. The results show that attendance is likely to be higher when the home team is strong, a rivalry or championship game is being played, and the tailgating scene beforehand was of the utmost quality. Additional analysis on the random effects shows how mid-sized school attendance greatly fluctuates from the quality of the team, while traditionally strong and small schools do not.
 
 
 ## Introduction
@@ -124,5 +124,27 @@ Sarkar D (2008). Lattice: Multivariate Data Visualization with R. Springer, New 
 
 ## Appendix 
 
+```{r echo=FALSE,message=FALSE, warning=FALSE, fig.height=5.2}
+distr(data)
+```
 
+```{r echo=FALSE,message=FALSE, warning=FALSE, fig.height=5.2}
+distr_c(data)
+```
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+p
+```
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+q
+```
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+s
+```
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+r
+```
 
